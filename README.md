@@ -1,6 +1,6 @@
 # Gmail Assistant - AI-Powered Email Reply Bot
 
-![n8n workflow](C:\Users\Xeven\Downloads\gmail-assitant\image.png) <!-- Replace with your actual image link -->
+![n8n workflow](image.png)
 
 An intelligent n8n workflow that automatically monitors your Gmail inbox, classifies incoming emails, and uses AI to draft professional, context-aware replies. It acts as a personal email assistant, saving you time and ensuring timely responses.
 
