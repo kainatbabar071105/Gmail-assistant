@@ -1,0 +1,275 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -256,
+        -16
+      ],
+      "id": "623c3c0d-431d-4d44-9174-93927c5536a5",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KSfuYlNxewykVRMu",
+          "name": "Gmail account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $json.snippet }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Meeting",
+              "description": "when the email come with the text meeting it will be seperated."
+            },
+            {
+              "category": "Project ",
+              "description": "when the email come with the text project it will be seperated."
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        -32,
+        -16
+      ],
+      "id": "5d69c6fe-82a6-4a46-8eb2-d75d268bf984",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -112,
+        192
+      ],
+      "id": "c3ea8482-939d-4f06-8eba-993df706a765",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ev5VNO6oU23tcobX",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "={{ $('Gmail Trigger').item.json.Subject }}",
+        "message": "={{ $('Gmail Trigger').item.json.snippet }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        704,
+        -80
+      ],
+      "id": "5aeecba7-d962-411b-b6c3-b75cb36a0abe",
+      "name": "Create a draft",
+      "webhookId": "8bac2386-9dbe-4cde-8f4f-a8c9082bd5ff",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KSfuYlNxewykVRMu",
+          "name": "Gmail account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "=act as  a copy wrtiere and my email assistent and reply to this \nemail:{{ $('Gmail Trigger').item.json.snippet }}\nand divide the mail in two types subjetc an dhte body of hte mail/."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        288,
+        -112
+      ],
+      "id": "a45e51f2-cb50-4556-84c2-38a2defdd341",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "ev5VNO6oU23tcobX",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "=act as  a copy wrtiere and my email assistent and reply to this \nemail:{{ $('Gmail Trigger').item.json.snippet }}\nand divide the mail in two types subjetc an dhte body of hte mail/."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        336,
+        80
+      ],
+      "id": "123ee273-487d-4b8e-a20b-2d074838fdd0",
+      "name": "Message a model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "ev5VNO6oU23tcobX",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "draft",
+        "subject": "project",
+        "message": "={{ $json.output[0].content[0].text }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        704,
+        80
+      ],
+      "id": "2474dc56-efe0-4359-a9de-8412bbd5d230",
+      "name": "Create a draft1",
+      "webhookId": "9d508ca0-4894-4495-b31a-5be4e27bb6f6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KSfuYlNxewykVRMu",
+          "name": "Gmail account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Message a model1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Create a draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Create a draft1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "b08b7ad2-c870-462b-9de8-6f855be4d31a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "340cbb70e25f679145b0a44b47b5e6e098d6104ebb8cbbf31302cc16a9160b26"
+  },
+  "nodeGroups": [],
+  "id": "qKa6G4baYPueWDW3",
+  "tags": []
+}
